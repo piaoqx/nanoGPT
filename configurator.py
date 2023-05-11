@@ -19,7 +19,7 @@ from ast import literal_eval
 
 for arg in sys.argv[1:]:
     if '=' not in arg:
-        # assume it's the name of a config file
+        # 假设它是配置文件的名称
         assert not arg.startswith('--')
         config_file = arg
         print(f"Overriding config with {config_file}:")
@@ -27,20 +27,20 @@ for arg in sys.argv[1:]:
             print(f.read())
         exec(open(config_file).read())
     else:
-        # assume it's a --key=value argument
+        # 假设它是一个 --key=value 参数
         assert arg.startswith('--')
         key, val = arg.split('=')
         key = key[2:]
         if key in globals():
             try:
-                # attempt to eval it it (e.g. if bool, number, or etc)
+                # 尝试对其进行评估（例如，如果是布尔值、数字等）
                 attempt = literal_eval(val)
             except (SyntaxError, ValueError):
-                # if that goes wrong, just use the string
+                # 如果出现问题，只需使用字符串
                 attempt = val
-            # ensure the types match ok
+            # 确保类型匹配正常
             assert type(attempt) == type(globals()[key])
-            # cross fingers
+            # 交叉手指
             print(f"Overriding: {key} = {attempt}")
             globals()[key] = attempt
         else:
